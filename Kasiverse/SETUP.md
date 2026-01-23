@@ -4,6 +4,7 @@
 ```bash
 git clone <repo-url>
 cd <project-folder>
+```
 
 ## 2. Create your own branch
 git checkout -b your-branch-name
