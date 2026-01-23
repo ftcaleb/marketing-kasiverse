@@ -85,7 +85,7 @@ function Problems() {
         {/* Add problem button */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-black text-white px-4 py-2 rounded-md"
+          className="bg-black text-white px-4 py-2 rounded-md hover:bg-linear-to-l from-gray-800 via-blue-700 to-gray-900 p-8"
         >
           + Add Problem
         </button>
