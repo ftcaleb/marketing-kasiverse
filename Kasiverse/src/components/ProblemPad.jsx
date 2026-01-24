@@ -25,7 +25,7 @@ function ProblemPad({ closeModal, addProblem }) {
     // Full-screen overlay
     <div className="fixed inset-0 bg-black/20 flex items-center justify-center">
       {/* Modal container */}
-      <div className="bg-white p-8 rounded-xl w-full max-w-md">
+      <div className="bg-gray-200/70 p-8 rounded-xl w-full max-w-md">
         {/* Modal title */}
         <h2 className="text-xl font-bold mb-6">
           Add a Community Problem
