@@ -18,7 +18,7 @@ function Stores() {
       description:
         "There isn't any reliable public transport to travel on a daily basis, and having to walk long distances just for transport is a bit tiring on a daily basis.",
       location: "Midrand",
-      category: "Services",
+      category: "Repairs",
       price: "50",
     },
     {
@@ -27,7 +27,7 @@ function Stores() {
       description:
         "Many parents work late and need affordable, safe after-school tutoring for their children in primary school.",
       location: "Alexandra",
-      category: "Services",
+      category: "Cleaning",
       price: "100",
     },
   ]);
