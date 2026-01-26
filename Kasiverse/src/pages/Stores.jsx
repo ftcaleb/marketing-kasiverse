@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 // components
 import StorePanel from "../components/StorePanel.jsx";
 import StorePad from "../components/StorePad.jsx";
+import CategoryFilter from "../components/CategoryFilter.jsx";
 
 // Problems page component
 function Stores() {
@@ -33,8 +34,13 @@ function Stores() {
 
   // State for search input value
   const [searchTerm, setSearchTerm] = useState("");
+  // State for active category filter
+  const [activeCategory, setActiveCategory] = useState("All");
   // State controlling modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Category options for filter
+  const categories = ["All", "Delivery", "Waste Collection", "Tutoring", "Cleaning", "Repairs", "Other"];
 
   // Function to add a new problem
   const addStore = (title, description, location, price, category) => {
@@ -51,16 +57,22 @@ function Stores() {
     setStores((prevStores) => [newStore, ...prevStores]);
   };
 
-  // Filter problems based on search input
+  // Filter problems based on search input and category
   const filteredProblems = stores.filter((store) => {
     const query = searchTerm.toLowerCase();
-
-    return (
+    
+    // Check if store matches search query
+    const matchesSearch = (
       store.title.toLowerCase().includes(query) ||
       store.description.toLowerCase().includes(query) ||
       store.location.toLowerCase().includes(query) || 
       (store.category?.toLowerCase().includes(query) || false)
     );
+
+    // Check if store matches selected category
+    const matchesCategory = activeCategory === "All" || store.category === activeCategory;
+
+    return matchesSearch && matchesCategory;
   });
 
   return (
@@ -100,14 +112,29 @@ function Stores() {
 
       </div>
 
+      {/* Category Filter */}
+      <CategoryFilter 
+        categories={categories}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
+      />
+
       {/* Problems grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        {filteredProblems.map((store) => (
-          <StorePanel
-            key={store.id}
-            store={store}
-          />
-        ))}
+        {filteredProblems.length > 0 ? (
+          filteredProblems.map((store) => (
+            <StorePanel
+              key={store.id}
+              store={store}
+            />
+          ))
+        ) : (
+          <div className="col-span-full flex items-center justify-center py-12">
+            <p className="text-xl text-gray-400 font-medium">
+              No stores available in this category
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Modal */}
