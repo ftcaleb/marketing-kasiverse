@@ -1,5 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import community from "../assets/community.png";
+import Ideas from "../assets/ideas.png";
+import Marketplace from "../assets/marketplace.png";
+
 
 function Homepage() {
     //cards data
@@ -9,25 +13,30 @@ function Homepage() {
       description:
         "Share issues impacting your community",
         borderColor: "border-amber-800",
+        bgImage: community,
     },
     {
       title: "Ideas",
       description:
         "Explore solutions to tackle unemployment",  
         borderColor: "border-blue-800",
+        bgImage: Ideas,
     },
     {
       title: "Marketplace",
       description:
         "Find and offer local services within your community",
         borderColor: "border-purple-800",
+        bgImage: Marketplace,
     },
 ];
   return (
     <div className="homepage">
        <div>
+        {/*Header */}
         <h1 className="text-6xl font-bold text-center pt-24 text-white">Kasiverse</h1>
         <div className="text-center text-white mt-4 mb-12 text-2xl font-semibold">
+          {/* Subtitle  */}
            <p className=" inline-block px-8 border-b">Empowering Communities, Solving Unemployment!</p>
         </div>
         <p className="text-center text-white mt-4">Join Kasiverse and help your community thrive! Post problems, share creative
@@ -38,15 +47,40 @@ function Homepage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 justify-items-center max-w-300 mx-auto">
         {cards.map((card, index) => (
   <div
-    className={`card1 aspect-square w-70 rounded-2xl overflow-hidden 
-                shadow-neutral-600 transition-all duration-300 hover:-translate-y-2
-                border-4 ${card.borderColor}`}
     key={index}
+    className={`group relative aspect-square w-70 rounded-2xl overflow-hidden 
+                border-4 ${card.borderColor}
+                transition-all duration-300 hover:-translate-y-2`}
+    style={{
+      backgroundImage: `url(${card.bgImage})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    }}
   >
-    <h3 className="text-xl text-white text-center font-bold mt-4">{card.title}</h3>
-    <p className="text-sm px-4 my-2 text-white text-center font-bold">
-      {card.description}
-    </p>
+    {/* Hover Overlay */}
+    <div
+      className="absolute inset-0 bg-black/60 opacity-0 
+                 transition-opacity duration-300 group-hover:opacity-100"
+    />
+
+    {/* Content */}
+    <div className="relative z-10 flex flex-col items-center justify-center h-full px-4 text-center">
+      
+      {/* Title (Always Visible) */}
+      <h3 className="text-2xl text-white font-bold drop-shadow-lg">
+        {card.title}
+      </h3>
+
+      {/* Description (Only on Hover) */}
+      <p
+        className="mt-2 text-sm text-white font-semibold 
+                   opacity-0 translate-y-4
+                   transition-all duration-300
+                   group-hover:opacity-100 group-hover:translate-y-0"
+      >
+        {card.description}
+      </p>
+    </div>
   </div>
 ))}
 
