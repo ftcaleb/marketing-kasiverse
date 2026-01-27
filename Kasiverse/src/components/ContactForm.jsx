@@ -98,7 +98,7 @@ export default function ContactForrm() {
             >
               Submit
             </button>
-            <Link to="/" className="hover:text-purple-600">
+            <Link to="/stores" className="hover:text-purple-600">
             Back
             </Link>
           </form>
