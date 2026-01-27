@@ -3,7 +3,7 @@ import React from "react";
 // CategoryFilter displays pill-style category tabs for filtering
 function CategoryFilter({ categories, activeCategory, onCategoryChange }) {
   return (
-    <div className="flex flex-wrap gap-3 mb-8">
+    <div className="flex flex-wrap gap-3 mb-8 mt-3">
       {categories.map((category) => (
         <button
           key={category}

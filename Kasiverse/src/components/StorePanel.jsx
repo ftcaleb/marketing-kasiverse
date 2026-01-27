@@ -32,7 +32,7 @@ function StorePanel({ store }) {
         <p className="text-sm text-white rounded-lg px-2 bg-green-500">${store.price}</p>
       </div>
 
-      <Link to="contactForm" className="mt-2 text-sm text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition duration-300 ease-out">
+      <Link to="contactform" className="mt-2 text-sm text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition duration-300 ease-out">
         Contact Business
         </Link>
 
