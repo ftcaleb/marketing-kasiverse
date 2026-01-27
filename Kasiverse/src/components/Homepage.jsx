@@ -35,12 +35,12 @@ function Homepage() {
       {/* Overlay to darken background image and content stays above background */}
        <div className="relative z-10">
         {/*Header */}
-        <h1 className="text-6xl font-bold text-center pt-24 text-white">Kasiverse</h1>
+        <h1 className="text-6xl font-bold text-center pt-24 text-white">UbuntuHub</h1>
         <div className="text-center text-white mt-4 mb-12 text-2xl font-semibold">
           {/* Subtitle  */}
            <p className=" inline-block px-8 border-b">Empowering Communities, Solving Unemployment!</p>
         </div>
-        <p className="text-center text-white mt-4">Join Kasiverse and help your community thrive! Post problems, share creative
+        <p className="text-center text-white mt-4">Join UbuntuHub and help your community thrive! Post problems, share creative
         </p>
         <p className="text-center text-white mb-12">solutions, and find local services to create new opportunities for all</p>
 
@@ -89,7 +89,7 @@ function Homepage() {
         </div>
         <div className="text-center text-white mb-12 font-semibold">
             <h1 className="text-2xl mb-4 inline-block px-8 border-b border-white">Together We Can Make a Difference!</h1>
-        <p className="mb-4">Join Kasiverse, Helping Every Community, Everywhere!</p>
+        <p className="mb-4">Join UbuntuHub, Helping Every Community, Everywhere!</p>
         {/* Action button */}
         <Link to="/problems">
         <button className="bg-linear-to-b from-green-500 via-emerald-500 to-teal-500 rounded-2xl px-6 py-2 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] transition duration-300 ease-out hover:-translate-y-1">Get Started Now!</button>
