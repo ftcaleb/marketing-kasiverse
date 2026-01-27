@@ -32,6 +32,7 @@ function Homepage() {
 ];
   return (
     <div className="homepage ">
+      {/* Overlay to darken background image and content stays above background */}
        <div className="relative z-10">
         {/*Header */}
         <h1 className="text-6xl font-bold text-center pt-24 text-white">Kasiverse</h1>
