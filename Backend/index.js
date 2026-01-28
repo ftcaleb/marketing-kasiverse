@@ -61,6 +61,6 @@ const authMiddleware = async (req, res, next) => {
   next();
 };
 
-app.listen(3001, () => {
+app.listen(PORT, () => {
   console.log("Server running on port 3001");
 });
