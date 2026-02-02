@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+:root{
+  --accent-purple: #630270;
+  --light-purple: #f76ef2;
+
+  --shadow-white-glow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
 .homepage {
   background-image: url("./assets/Soweto.jpg");
   background-size: cover;
