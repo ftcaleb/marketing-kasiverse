@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useDispatch } from 'react-redux'
+import { addStore } from '../store/storeSlice'
 
 // ProblemPad is the modal form used to add a new problem
-function StorePad({ closeModal, addStore }) {
+function StorePad({ closeModal }) {
 
   // State to store the problem title
   const [businessName, setbusinessName] = useState("");
@@ -14,12 +16,23 @@ function StorePad({ closeModal, addStore }) {
 
   const [category, setCategory] = useState("");
 
+  const dispatch = useDispatch()
+
   // Function runs when the form is submitted
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents page refresh
 
-    // Call parent function to add a new problem
-    addStore(businessName, description, location, price, category);
+    const newStore = {
+      id: Date.now(),
+      title: businessName,
+      description,
+      location,
+      price,
+      category,
+    }
+
+    // Dispatch action to add the store (and persist to localStorage)
+    dispatch(addStore(newStore))
 
     // Close the modal after adding the problem
     closeModal();

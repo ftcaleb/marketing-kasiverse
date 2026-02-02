@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 // search icon
 import { Search } from "lucide-react";
+import { useSelector } from 'react-redux'
 
 // components
 import StorePanel from "../components/StorePanel.jsx";
@@ -10,27 +11,8 @@ import CategoryFilter from "../components/CategoryFilter.jsx";
 // Problems page component
 function Stores() {
 
-  // State holding all problems (static + user-added)
-  const [stores, setStores] = useState([
-    {
-      id: 1,
-      title: "Transport",
-      description:
-        "There isn't any reliable public transport to travel on a daily basis, and having to walk long distances just for transport is a bit tiring on a daily basis.",
-      location: "Midrand",
-      category: "Repairs",
-      price: "50",
-    },
-    {
-      id: 2,
-      title: "Need after-school tutoring",
-      description:
-        "Many parents work late and need affordable, safe after-school tutoring for their children in primary school.",
-      location: "Alexandra",
-      category: "Cleaning",
-      price: "100",
-    },
-  ]);
+  // Stores are now managed globally via Redux (persisted to localStorage)
+  const stores = useSelector((state) => state.stores);
 
   // State for search input value
   const [searchTerm, setSearchTerm] = useState("");
@@ -42,20 +24,7 @@ function Stores() {
   // Category options for filter
   const categories = ["All", "Delivery", "Waste Collection", "Tutoring", "Cleaning", "Repairs", "Other"];
 
-  // Function to add a new problem
-  const addStore = (title, description, location, price, category) => {
-    const newStore = {
-      id: Date.now(), // Temporary unique ID
-      title,
-      description,
-      location,
-      price,
-      category,
-    };
-
-    // Add the new problem to the top of the list
-    setStores((prevStores) => [newStore, ...prevStores]);
-  };
+  // Adding stores is handled by the `StorePad` component via Redux dispatch
 
   // Filter problems based on search input and category
   const filteredProblems = stores.filter((store) => {
@@ -141,7 +110,6 @@ function Stores() {
       {isModalOpen && (
         <StorePad
           closeModal={() => setIsModalOpen(false)}
-          addStore={addStore}
         />
       )}
     </div>
