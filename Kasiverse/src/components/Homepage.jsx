@@ -91,7 +91,7 @@ function Homepage() {
             <h1 className="text-2xl mb-4 inline-block px-8 border-b border-white">Together We Can Make a Difference!</h1>
         <p className="mb-4">Join UbuntuHub, Helping Every Community, Everywhere!</p>
         {/* Action button */}
-        <Link to="/problems">
+        <Link to="/register">
         <button className="bg-linear-to-b from-green-500 via-emerald-500 to-teal-500 rounded-2xl px-6 py-2 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] transition duration-300 ease-out hover:-translate-y-1">Get Started Now!</button>
         </Link>
         </div>
