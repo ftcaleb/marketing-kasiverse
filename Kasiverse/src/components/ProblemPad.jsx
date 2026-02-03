@@ -23,9 +23,9 @@ function ProblemPad({ closeModal, addProblem }) {
 
   return (
     // Full-screen overlay
-    <div className="fixed inset-0 bg-black/20 flex items-center justify-center">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
       {/* Modal container */}
-      <div className="bg-gray-200/70 p-8 rounded-xl w-full max-w-md">
+      <div className="bg-white text-black p-8 rounded-xl w-full max-w-md">
         {/* Modal title */}
         <h2 className="text-xl font-bold mb-6">
           Add a Community Problem
@@ -34,6 +34,7 @@ function ProblemPad({ closeModal, addProblem }) {
         {/* Form wrapper */}
         <form onSubmit={handleSubmit}>
           {/* Title label */}
+        
           <label className="block text-sm font-medium mb-1">
             Problem Title
           </label>
