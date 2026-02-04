@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { createNote } from "../lib/api";
 
 // ProblemPad is the modal form used to add a new problem
-function ProblemPad({ closeModal, addProblem }) {
+function ProblemPad({ closeModal, onProblemAdded }) {
 
   // State to store the problem title
   const [title, setTitle] = useState("");
@@ -9,16 +10,44 @@ function ProblemPad({ closeModal, addProblem }) {
   const [description, setDescription] = useState("");
   // State to store the problem location
   const [location, setLocation] = useState("");
+  // Loading and error states
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   // Function runs when the form is submitted
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Prevents page refresh
 
-    // Call parent function to add a new problem
-    addProblem(title, description, location);
+    // Validation
+    if (!title.trim() || !description.trim() || !location.trim()) {
+      setError("All fields are required");
+      return;
+    }
 
-    // Close the modal after adding the problem
-    closeModal();
+    setIsLoading(true);
+    setError("");
+
+    try {
+      // Create note via API
+      const newProblem = await createNote({
+        title,
+        description,
+        location,
+      });
+
+      // Notify parent component
+      if (onProblemAdded) {
+        onProblemAdded(newProblem);
+      }
+
+      // Close the modal after adding the problem
+      closeModal();
+    } catch (err) {
+      setError(err.message || "Failed to add problem. Please try again.");
+      console.error("Create problem error:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -31,10 +60,16 @@ function ProblemPad({ closeModal, addProblem }) {
           Add a Community Problem
         </h2>
 
+        {/* Error message */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+
         {/* Form wrapper */}
         <form onSubmit={handleSubmit}>
           {/* Title label */}
-        
           <label className="block text-sm font-medium mb-1">
             Problem Title
           </label>
@@ -44,6 +79,7 @@ function ProblemPad({ closeModal, addProblem }) {
             value={title}
             placeholder="e.g., No waste collection service"
             onChange={(e) => setTitle(e.target.value)}
+            disabled={isLoading}
           />
 
           {/* Description label */}
@@ -57,6 +93,7 @@ function ProblemPad({ closeModal, addProblem }) {
             value={description}
             placeholder="Describe the problem in detail..."
             onChange={(e) => setDescription(e.target.value)}
+            disabled={isLoading}
           />
 
           {/* Location label */}
@@ -69,6 +106,7 @@ function ProblemPad({ closeModal, addProblem }) {
             value={location}
             placeholder="e.g., Soweto"
             onChange={(e) => setLocation(e.target.value)}
+            disabled={isLoading}
           />
 
           {/* Action buttons */}
@@ -77,7 +115,8 @@ function ProblemPad({ closeModal, addProblem }) {
             <button
               type="button"
               onClick={closeModal}
-              className="w-1/2 border border-gray-300 py-2 rounded-md"
+              disabled={isLoading}
+              className="w-1/2 border border-gray-300 py-2 rounded-md hover:bg-gray-100 disabled:opacity-50"
             >
               Cancel
             </button>
@@ -85,9 +124,10 @@ function ProblemPad({ closeModal, addProblem }) {
             {/* Submit button adds the problem */}
             <button
               type="submit"
-              className="w-1/2 bg-black text-white py-2 rounded-md"
+              disabled={isLoading}
+              className="w-1/2 bg-black text-white py-2 rounded-md hover:bg-gray-800 disabled:opacity-50"
             >
-              Add Problem
+              {isLoading ? "Adding..." : "Add Problem"}
             </button>
 
           </div>

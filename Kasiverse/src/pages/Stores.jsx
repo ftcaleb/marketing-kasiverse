@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // search icon
 import { Search } from "lucide-react";
-import { useSelector } from 'react-redux'
+import { useNavigate } from "react-router-dom";
+
+// API
+import { getNotes, isAuthenticated } from "../lib/api";
 
 // components
 import StorePanel from "../components/StorePanel.jsx";
@@ -10,11 +13,19 @@ import CategoryFilter from "../components/CategoryFilter.jsx";
 import Navbar from "../components/Navbar.jsx";
 
 
-// Problems page component
+// Stores page component
 function Stores() {
+  const navigate = useNavigate();
 
-  // Stores are now managed globally via Redux (persisted to localStorage)
-  const stores = useSelector((state) => state.stores);
+  // Check authentication on mount
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
+  // Stores are now managed via backend API
+  const [stores, setStores] = useState([]);
 
   // State for search input value
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,21 +33,61 @@ function Stores() {
   const [activeCategory, setActiveCategory] = useState("All");
   // State controlling modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // Loading and error states
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
   // Category options for filter
   const categories = ["All", "Delivery", "Waste Collection", "Tutoring", "Cleaning", "Repairs", "Other"];
 
-  // Adding stores is handled by the `StorePad` component via Redux dispatch
+  // Fetch stores on component mount
+  useEffect(() => {
+    fetchStores();
+  }, []);
 
-  // Filter problems based on search input and category
-  const filteredProblems = stores.filter((store) => {
+  // Function to fetch stores from backend
+  const fetchStores = async () => {
+    setIsLoading(true);
+    setError("");
+    try {
+      const data = await getNotes();
+      // Ensure data is an array
+      setStores(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Fetch stores error:", err);
+      setError(err.message || "Failed to load stores");
+      setStores([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Function to handle new store added
+  const handleStoreAdded = (newStore) => {
+    setStores((prev) => [newStore, ...prev]);
+  };
+
+  // Function to handle store deletion
+  const handleStoreDelete = (storeId) => {
+    setStores((prev) => prev.filter((s) => s.id !== storeId));
+  };
+
+  // Function to handle store update
+  const handleStoreUpdate = (updatedStore) => {
+    setStores((prev) =>
+      prev.map((s) => (s.id === updatedStore.id ? updatedStore : s))
+    );
+  };
+
+  // Filter stores based on search input and category
+  const filteredStores = stores.filter((store) => {
     const query = searchTerm.toLowerCase();
     
     // Check if store matches search query
     const matchesSearch = (
       store.title.toLowerCase().includes(query) ||
       store.description.toLowerCase().includes(query) ||
-      store.location.toLowerCase().includes(query) || 
+      (store.location && store.location.toLowerCase().includes(query)) || 
       (store.category?.toLowerCase().includes(query) || false)
     );
 
@@ -61,6 +112,19 @@ function Stores() {
         Support local businesses and discover new products.
       </p>
 
+      {/* Error message */}
+      {error && (
+        <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
+          <button
+            onClick={fetchStores}
+            className="ml-4 underline hover:no-underline font-semibold"
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
       {/* Top bar */}
       <div className="flex items-center justify-between gap-4 backdrop-blur-md">
         {/* Search input */}
@@ -68,17 +132,17 @@ function Stores() {
           <Search size={18} />
           <input
             type="text"
-            placeholder="Search problems..."
+            placeholder="Search stores..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full text-sm"
           />
         </div>
 
-        {/* Add problem button */}
+        {/* Add store button */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-black w-40 text-white px-4 py-3 rounded-md transition duration-300 ease-out hover:bg-linear-to-l from-purple-800 via-black to-purple-900 p-8"
+          className="bg-black w-40 text-white px-4 py-3 rounded-md transition duration-300 ease-out hover:bg-gray-800"
         >
           + List Service
         </button>
@@ -92,19 +156,25 @@ function Stores() {
         onCategoryChange={setActiveCategory}
       />
 
-      {/* Problems grid */}
+      {/* Stores grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        {filteredProblems.length > 0 ? (
-          filteredProblems.map((store) => (
+        {isLoading ? (
+          <div className="col-span-full flex items-center justify-center py-12">
+            <p className="text-xl text-gray-400 font-medium">Loading stores...</p>
+          </div>
+        ) : filteredStores.length > 0 ? (
+          filteredStores.map((store) => (
             <StorePanel
               key={store.id}
               store={store}
+              onDelete={handleStoreDelete}
+              onUpdate={handleStoreUpdate}
             />
           ))
         ) : (
           <div className="col-span-full flex items-center justify-center py-12">
             <p className="text-xl text-gray-400 font-medium">
-              No stores available in this category
+              {stores.length === 0 ? "No stores yet. Be the first to list one!" : "No stores match your search"}
             </p>
           </div>
         )}
@@ -114,6 +184,7 @@ function Stores() {
       {isModalOpen && (
         <StorePad
           closeModal={() => setIsModalOpen(false)}
+          onStoreAdded={handleStoreAdded}
         />
       )}
     </div>
