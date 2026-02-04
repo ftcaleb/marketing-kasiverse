@@ -16,24 +16,22 @@ import { Link } from "react-router-dom";
         {/* Navlinks stay horizontal, centered, wrap if needed, no scroll */}
         <div className="flex flex-wrap justify-center gap-6 grow overflow-x-auto whitespace-nowrap">
           {/* Each navlink leads to a different page */}
-          <a 
-            href="#home"
+          <Link to="/problems" 
             className="text-white font-semibold no-underline transition-all duration-300 hover:bg-linear-to-l from-gray-800 via-blue-700 to-gray-900 px-3 py-1.5 rounded-lg"
           >
             Problems
-          </a>
+          </Link>
           <a
             href="#Ideas"
             className="text-white font-semibold no-underline transition-all duration-300 hover:bg-linear-to-l from-gray-800 via-blue-700 to-gray-900 px-3 py-1.5 rounded-lg"
           >
             Ideas
           </a>
-          <a
-            href="#Marketplace"
+          <Link to="/stores"
             className="text-white font-semibold no-underline transition-all duration-300 hover:bg-linear-to-l from-gray-800 via-blue-700 to-gray-900 hover:text-deep-pink px-3 py-1.5 rounded-lg"
           >
             Marketplace
-          </a>
+          </Link>
         </div>
 
        
