@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // search icon
 import { Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+// API
+import { getNotes, isAuthenticated } from "../lib/api";
 
 // components
 import ProblemPanel from "../components/ProblemPanel";
@@ -9,63 +13,63 @@ import Navbar from "../components/Navbar.jsx";
 
 // Problems page component
 function Problems() {
+  const navigate = useNavigate();
 
-  // State holding all problems (static + user-added)
-  const [problems, setProblems] = useState([
-    {
-      id: 1,
-      title: "Transport",
-      description:
-        "There isn't any reliable public transport to travel on a daily basis, and having to walk long distances just for transport is a bit tiring on a daily basis.",
-      location: "Midrand",
-    },
-    {
-      id: 2,
-      title: "Need after-school tutoring",
-      description:
-        "Many parents work late and need affordable, safe after-school tutoring for their children in primary school.",
-      location: "Alexandra",
-    },
-    {
-      id: 3,
-      title: "Crime and Safety",
-      description:
-        "High crime rates make it unsafe to walk around at night, with incidents of theft, burglary, and gang violence being common.",
-      location: "Vaal",
-    },
-    {
-  id: 4,
-  title: "Electricity Load Shedding",
-  description:
-    "Communities experience frequent power outages, which disrupts small businesses, studying, and household routines.",
-  location: "Townships in Gauteng",
-},
-    {
-  id: 5,
-  title: "Fitness & Recreation",
-  description:
-    "People lack safe areas to exercise or play sports. Starting community gyms, classes, or sports programs could help.",
-  location: "Brakpan",
-},
+  // Check authentication on mount
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
-  ]);
-
+  // State holding all problems from backend
+  const [problems, setProblems] = useState([]);
+  
   // State for search input value
   const [searchTerm, setSearchTerm] = useState("");
   // State controlling modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // Loading and error states
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // Function to add a new problem
-  const addProblem = (title, description, location) => {
-    const newProblem = {
-      id: Date.now(), // Temporary unique ID
-      title,
-      description,
-      location,
-    };
+  // Fetch problems on component mount
+  useEffect(() => {
+    fetchProblems();
+  }, []);
 
-    // Add the new problem to the top of the list
-    setProblems((prevProblems) => [newProblem, ...prevProblems]);
+  // Function to fetch problems from backend
+  const fetchProblems = async () => {
+    setIsLoading(true);
+    setError("");
+    try {
+      const data = await getNotes();
+      // Ensure data is an array
+      setProblems(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Fetch problems error:", err);
+      setError(err.message || "Failed to load problems");
+      setProblems([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Function to handle new problem added
+  const handleProblemAdded = (newProblem) => {
+    setProblems((prev) => [newProblem, ...prev]);
+  };
+
+  // Function to handle problem deletion
+  const handleProblemDelete = (problemId) => {
+    setProblems((prev) => prev.filter((p) => p.id !== problemId));
+  };
+
+  // Function to handle problem update
+  const handleProblemUpdate = (updatedProblem) => {
+    setProblems((prev) =>
+      prev.map((p) => (p.id === updatedProblem.id ? updatedProblem : p))
+    );
   };
 
   // Filter problems based on search input
@@ -75,7 +79,7 @@ function Problems() {
     return (
       problem.title.toLowerCase().includes(query) ||
       problem.description.toLowerCase().includes(query) ||
-      problem.location.toLowerCase().includes(query)
+      (problem.location && problem.location.toLowerCase().includes(query))
     );
   });
 
@@ -93,7 +97,19 @@ function Problems() {
       <p className="text-gray-300 mb-6">
         Share problems affecting your community.
       </p>
-      
+
+      {/* Error message */}
+      {error && (
+        <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
+          <button
+            onClick={fetchProblems}
+            className="ml-4 underline hover:no-underline font-semibold"
+          >
+            Retry
+          </button>
+        </div>
+      )}
 
       {/* Top bar */}
       <div className="flex items-center justify-between gap-4 ">
@@ -112,7 +128,7 @@ function Problems() {
         {/* Add problem button */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-linear-to-l from-purple-800 via-black to-purple-900 text-white w-40 px-4 py-3  rounded-md transition duration-300 ease-out"
+          className="bg-linear-to-l from-purple-800 via-black to-purple-900 text-white w-40 px-4 py-3  rounded-md transition duration-300 ease-out hover:bg-purple-900"
         >
           + Add Problem
         </button>
@@ -122,19 +138,33 @@ function Problems() {
 
       {/* Problems grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-3 mt-8 max-w-8xl mx-auto">
-        {filteredProblems.map((problem) => (
-          <ProblemPanel
-            key={problem.id}
-            problem={problem}
-          />
-        ))}
+        {isLoading ? (
+          <div className="col-span-full flex items-center justify-center py-12">
+            <p className="text-xl text-gray-400 font-medium">Loading problems...</p>
+          </div>
+        ) : filteredProblems.length > 0 ? (
+          filteredProblems.map((problem) => (
+            <ProblemPanel
+              key={problem.id}
+              problem={problem}
+              onDelete={handleProblemDelete}
+              onUpdate={handleProblemUpdate}
+            />
+          ))
+        ) : (
+          <div className="col-span-full flex items-center justify-center py-12">
+            <p className="text-xl text-gray-400 font-medium">
+              {problems.length === 0 ? "No problems yet. Be the first to add one!" : "No problems match your search."}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Modal */}
       {isModalOpen && (
         <ProblemPad
           closeModal={() => setIsModalOpen(false)}
-          addProblem={addProblem}
+          onProblemAdded={handleProblemAdded}
         />
       )}
     </div>
