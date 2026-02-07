@@ -104,9 +104,6 @@ app.get("/notes", authMiddleware, async (req, res) => {
       .select("*")
       .order("created_at", { ascending: false });
 
-    // No role check needed for reading - everyone sees everything
-    // if (userRole !== "admin") { ... }
-
     const { data, error } = await query;
 
     if (error) {
@@ -169,9 +166,6 @@ app.get("/notes/:id", authMiddleware, async (req, res) => {
       .from("notes")
       .select("*")
       .eq("id", noteId);
-
-    // No role check needed
-    // if (userRole !== "admin") { ... }
 
     const { data, error } = await query.single();
 

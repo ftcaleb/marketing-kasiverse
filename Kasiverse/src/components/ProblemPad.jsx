@@ -33,6 +33,7 @@ function ProblemPad({ closeModal, onProblemAdded }) {
         title,
         description,
         location,
+        category: "Problem",
       });
 
       // Notify parent component
