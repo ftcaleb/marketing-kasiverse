@@ -1,8 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import community from "../assets/community.png";
-import Ideas from "../assets/Ideas.png";
-import Marketplace from "../assets/Marketplace.png";
+import ideas from "../assets/ideas.png";
+import marketplace from "../assets/marketplace.png";
 
 
 function Homepage() {
@@ -20,14 +20,14 @@ function Homepage() {
       description:
         "Explore solutions to tackle unemployment",
       borderColor: "border-blue-800",
-      bgImage: Ideas,
+      bgImage: ideas,
     },
     {
       title: "Marketplace",
       description:
         "Find and offer local services within your community",
       borderColor: "border-purple-800",
-      bgImage: Marketplace,
+      bgImage: marketplace,
     },
   ];
   return (
