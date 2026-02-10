@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import community from "../assets/community.png";
-import Ideas from "../assets/ideas.png";
+import Ideas from "../assets/Ideas.png";
 import Marketplace from "../assets/Marketplace.png";
 
 
